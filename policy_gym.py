@@ -1,52 +1,8 @@
 # %%
 import numpy as np
 import gym
-import time
+
 # %%
-def play_episodes(enviorment, n_episodes, policy, random=False):
-
-    # intialize wins and total reward
-    wins = 0
-    total_reward = 0
-
-    # loop over number of episodes to play
-    for episode in range(n_episodes):
-
-        # flag to check if the game is finished
-        terminated = False
-
-        # reset the enviorment every time when playing a new episode
-        state = enviorment.reset()
-
-        while not terminated:
-
-            # check if the random flag is not true then follow the given policy other wise take random action
-            if random:
-                action = enviorment.action_space.sample()
-            else:
-                action = policy[state]
-
-            # take the next step
-            next_state, reward, terminated, info = enviorment.step(action)
-
-            enviorment.render()
-
-            # accumalate total reward
-            total_reward += reward
-
-            # change the state
-            state = next_state
-
-        # if game is over with positive reward then add 1.0 in wins
-        if terminated and reward == 1.0:
-            wins += 1
-
-    # calculate average reward
-    average_reward = total_reward / n_episodes
-
-    return wins, total_reward, average_reward
-
-
 def value_eval(env, state, state_value, discount = 0.99):
     action_value = np.zeros(env.nA)
     # loop over the actions we can take in an enviorment
@@ -94,15 +50,6 @@ def policy_iteration(env, discount = 0.99, episodes = 1000, max_iter_eval = 1000
                break
            state_value_prev = np.copy(state_value)
 
-       #  # Policy Evaluation
-       # for j in range(max_iter_eval):
-       #     iter_count_j += 1
-       #     state_value = policy_eval(env, policy, state_value, discount)
-       #     if j % 5 == 0:
-       #         if (np.all(np.equal(state_value, state_value_prev))):
-       #             break
-       #     state_value_prev = np.copy(state_value)
-
        # Policy Improvement
        policy = policy_improve(env, policy, state_value, discount)
 
@@ -116,24 +63,23 @@ def policy_iteration(env, discount = 0.99, episodes = 1000, max_iter_eval = 1000
 
 # %%
 # Frozen Lake stochastisch
-#env = gym.make('FrozenLake8x8-v0')
-#env = gym.make('FrozenLake-v0')
+# env_stoch = gym.make('FrozenLake8x8-v0')
+# env_stoch = gym.make('FrozenLake-v0')
 
-# Frozen Lake not slippery (-> deterministisch)
+# Frozen Lake deterministisch
 # from gym.envs.registration import register
+#
 # register(
 #     id='FrozenLakeNotSlippery-v0',
 #     entry_point='gym.envs.toy_text:FrozenLakeEnv',
-#     kwargs={'map_name' : '4x4', 'is_slippery': False},
-#     max_episode_steps=100,
-#     reward_threshold=0.78, # optimum = .8196
+#     kwargs={'map_name': '4x4', 'is_slippery': False},
 # )
 
-# To delete any new environment
+# Löschen einer Umgebung
 # del gym.envs.registry.env_specs['FrozenLakeNotSlippery-v0']
 
-# Make the environment based on deterministic policy
-env = gym.make('FrozenLakeNotSlippery-v0')
+# deterministische Umgebung
+env_det = gym.make('FrozenLakeNotSlippery-v0')
 
 '''
 ForzenLake: https://github.com/openai/gym/wiki/FrozenLake-v0
@@ -144,22 +90,18 @@ Actions:
     UP = 3
 '''
 action_mapping = {
-    3: '\u2191', # UP
-    2: '\u2192', # RIGHT
-    1: '\u2193', # DOWN
-    0: '\u2190' # LEFT
+    3: '\u2191',  # UP
+    2: '\u2192',  # RIGHT
+    1: '\u2193',  # DOWN
+    0: '\u2190'  # LEFT
 }
 
 # %%
 # Parameters
-discount = 0.999
+discount = 0.99
 episodes = 10000
 
-tic = time.time()
 opt_state_value, opt_policy = policy_iteration(env, discount, episodes)
-toc = time.time()
-elapsed_time = (toc - tic) * 1000
-print (f"Time to converge: {elapsed_time: 0.3} ms")
 print('Optimal Value function: ')
 print(opt_state_value.reshape((4, 4)))
 print('Final Policy: ')
@@ -170,4 +112,3 @@ for i in range(5):
     j = i*4
     print(' '.join([action_mapping[int(action)] for action in opt_policy[j-4:j]]))
 
-wins, total_reward, avg_reward = play_episodes(env, 1, opt_policy, random=False)
