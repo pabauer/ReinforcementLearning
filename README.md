@@ -1,2 +1,2 @@
-# ReinforcmentLearning
-Some code snippets for demonstrating Reinforcement Learning from an Operations Research Perspective
+# Reinforcement Learning
+Implementierung der Algorithmen Policy Iteration, Value Iteration und Q-Learning
