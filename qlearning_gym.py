@@ -5,7 +5,6 @@ import random
 # %%
 def q_Learning(env, discount=0.99, epsilon=0.1, alpha=0.85, episodes=1000):
     action_table = np.zeros((env.nS, env.nA))
-    scores = []
     policy = [0 for i in range(env.nS)]
 
     for episode in range(episodes):
