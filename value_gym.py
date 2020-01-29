@@ -85,7 +85,7 @@ episodes = 10000
 theta = 1e-8
 
 
-opt_state_value, opt_policy = value_iteration(env, discount, theta, episodes)
+opt_state_value, opt_policy = value_iteration(env_det, discount, theta, episodes)
 print('Optimal Value function: ')
 print(opt_state_value.reshape((4, 4)))
 print('Final Policy: ')

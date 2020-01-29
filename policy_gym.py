@@ -101,7 +101,7 @@ action_mapping = {
 discount = 0.99
 episodes = 10000
 
-opt_state_value, opt_policy = policy_iteration(env, discount, episodes)
+opt_state_value, opt_policy = policy_iteration(env_det, discount, episodes)
 print('Optimal Value function: ')
 print(opt_state_value.reshape((4, 4)))
 print('Final Policy: ')
